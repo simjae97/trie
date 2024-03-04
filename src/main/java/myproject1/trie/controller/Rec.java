@@ -1,5 +1,6 @@
 package myproject1.trie.controller;
 
+import myproject1.trie.trie.SimplePatternMatching;
 import org.springframework.core.io.ClassPathResource;
 
 import java.io.BufferedReader;
@@ -28,3 +29,12 @@ public class Rec {
         }
     }
 }
+
+
+//SimplePatternMatching a = new SimplePatternMatching(); //단순 문자열 비교
+//beforeTime = System.currentTimeMillis();
+//List<String> result2 = a.searchPatterns(content,words);
+//        System.out.println("result2 = " + result2);
+//afterTime = System.currentTimeMillis();
+//secDiffTime = (afterTime - beforeTime);
+//        System.out.println("시간차이 : "+secDiffTime); 단순 문자열 비교 : 추후 시간초 확인할때 다시 넣기, 현재는 밖으로 빼버려서 빼둠

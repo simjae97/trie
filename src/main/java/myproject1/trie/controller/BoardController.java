@@ -8,6 +8,7 @@ import myproject1.trie.trie.SimplePatternMatching;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,14 +22,16 @@ public class BoardController {
 
     @Autowired
     WritingDAO writingDAO;
-    List<String> words = new LinkedList<>();
-    AhoCorasick ret;
+    AhoCorasick filter;
+
+    AhoCorasick rec;
 
     public BoardController() {//욕설필터링에 사용할 ahokora식은 변경 될 일이 없으므로 한번만 생성
         //csv받아와서 Trie에 저장,현재는 단순 비교이므로 aho corasick으로 변경 준비
         // 반환용 리스트 변수
         // 입력 스트림 오브젝트 생성
         // CSV 파일 경로
+        List<String> words = new LinkedList<>();
         try {
             // CSV 파일 경로
             Resource resource = new ClassPathResource("static/csv/Word_Filter.csv");
@@ -46,10 +49,32 @@ public class BoardController {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        this.ret = new AhoCorasick(words);
+        this.filter = new AhoCorasick(words);
+        logupdate();
     }
     //자동완성용 문자추천 csv의 경우 csv가 누적되며 바뀌므로 이벤트 스케쥴러처럼 주기마다 갱신되게 하기?
+    @Scheduled(cron = "0 0 0/1 * * *") //1시간에 한번 실행되게 하기
+    public void logupdate(){
+        List<String> words2 = new LinkedList<>();
+        try {
+            // CSV 파일 경로
+            Resource resource = new ClassPathResource("static/csv/Word_recommend.csv");
+            InputStream inputStream = resource.getInputStream();
 
+            // CSV 파일에서 단어 읽어오기
+            try (BufferedReader br = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8))) {
+                String line;
+                while ((line = br.readLine()) != null) {
+                    // CSV 파일에서 읽은 데이터에서 쉼표 제거 후 리스트에 추가
+                    String word = line.replace(",", "");
+                    words2.add(word);
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        this.rec = new AhoCorasick(words2);
+    }
     @GetMapping("/")
     public String view(){
 
@@ -77,19 +102,12 @@ public class BoardController {
 
          //아호코라식에 넣기위해 만들어둔 리스트를 넣음
         beforeTime = System.currentTimeMillis();
-        List<String> result = ret.search(content);
+        List<String> result = filter.search(content);
         System.out.println("result = " + result);
         afterTime = System.currentTimeMillis();
         secDiffTime = (afterTime - beforeTime);
         System.out.println("시간차이 : "+secDiffTime);
 
-        SimplePatternMatching a = new SimplePatternMatching(); //단순 문자열 비교
-        beforeTime = System.currentTimeMillis();
-        List<String> result2 = a.searchPatterns(content,words);
-        System.out.println("result2 = " + result2);
-        afterTime = System.currentTimeMillis();
-        secDiffTime = (afterTime - beforeTime);
-        System.out.println("시간차이 : "+secDiffTime);
 
         return result;
 
