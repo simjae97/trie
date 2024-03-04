@@ -21,29 +21,13 @@ public class BoardController {
 
     @Autowired
     WritingDAO writingDAO;
+    List<String> words = new LinkedList<>();
+    AhoCorasick ret;
 
-
-    @GetMapping("/")
-    public String view(){
-
-        return "hi";
-    }
-
-    @PostMapping("/write")
-    @ResponseBody
-    public boolean write(WritingDTO writingDTO){
-        System.out.println("writingDTO = " + writingDTO);
-        return writingDAO.write(writingDTO); // 추후 등록한 다음 로그파일로 빼게 구현
-    }
-
-    @PostMapping("/check")
-    @ResponseBody
-    public List<String> csv1( String content){
-        System.out.println("text = " + content);
+    public BoardController() {//욕설필터링에 사용할 ahokora식은 변경 될 일이 없으므로 한번만 생성
         //csv받아와서 Trie에 저장,현재는 단순 비교이므로 aho corasick으로 변경 준비
         // 반환용 리스트 변수
         // 입력 스트림 오브젝트 생성
-        List<String> words = new LinkedList<>(); // 단어를 저장할 리스트
         // CSV 파일 경로
         try {
             // CSV 파일 경로
@@ -62,9 +46,28 @@ public class BoardController {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        this.ret = new AhoCorasick(words);
+    }
+    //로그 csv의 경우 csv가 누적되며 바뀌므로 이벤트 스케쥴러처럼 주기마다 갱신되게 하기?
 
+    @GetMapping("/")
+    public String view(){
+
+        return "hi";
+    }
+
+    @PostMapping("/write")
+    @ResponseBody
+    public boolean write(WritingDTO writingDTO){
+        System.out.println("writingDTO = " + writingDTO);
+        return writingDAO.write(writingDTO); // 추후 등록한 다음 로그파일로 빼게 구현
+    }
+
+    @PostMapping("/check")
+    @ResponseBody
+    public List<String> csv1( String content){
+        System.out.println("text = " + content);
         // Aho-Corasick 알고리즘을 사용하여 단어 검색
-        // 이 부분에서 Aho-Corasick 알고리즘을 적용하여 단어 검색 로직을 추가해야 합니다.
 
         // Word_recommend.csv 파일 처리
 
@@ -72,7 +75,7 @@ public class BoardController {
         long afterTime = System.currentTimeMillis(); // 코드 실행 후에 시간 받아오기
         long secDiffTime = (afterTime - beforeTime); //두 시간에 차 계산
 
-        AhoCorasick ret = new AhoCorasick(words); //아호코라식에 넣기위해 만들어둔 리스트를 넣음
+         //아호코라식에 넣기위해 만들어둔 리스트를 넣음
         beforeTime = System.currentTimeMillis();
         List<String> result = ret.search(content);
         System.out.println("result = " + result);
