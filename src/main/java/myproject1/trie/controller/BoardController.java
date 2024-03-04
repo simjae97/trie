@@ -48,7 +48,7 @@ public class BoardController {
         }
         this.ret = new AhoCorasick(words);
     }
-    //로그 csv의 경우 csv가 누적되며 바뀌므로 이벤트 스케쥴러처럼 주기마다 갱신되게 하기?
+    //자동완성용 문자추천 csv의 경우 csv가 누적되며 바뀌므로 이벤트 스케쥴러처럼 주기마다 갱신되게 하기?
 
     @GetMapping("/")
     public String view(){
