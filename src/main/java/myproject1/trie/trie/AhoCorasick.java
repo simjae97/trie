@@ -4,6 +4,7 @@ package myproject1.trie.trie;
 
 import java.util.*;
 
+
 public class AhoCorasick {
     private TrieNode root; //맨처음노드
 

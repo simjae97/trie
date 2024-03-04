@@ -12,7 +12,7 @@ import java.nio.file.Paths;
 import java.util.LinkedList;
 import java.util.List;
 
-public class Old {
+public class Old { //이전에 해봤던거
     public static void main(String[] args) {
         //csv받아와서 Trie에 저장,현재는 단순 비교이므로 aho corasick으로 변경 준비
         // 반환용 리스트 변수

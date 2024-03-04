@@ -11,7 +11,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.LinkedList;
 import java.util.List;
 
-public class Rec {
+public class Rec { //테스트용
     public static void main(String[] args) {
         String recommendationCsvPath = "csv/Word_recommend.csv";
         List<String> recommendations = new LinkedList<>(); // 추천 단어를 저장할 리스트
