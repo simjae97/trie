@@ -62,11 +62,11 @@ public class BoardController {
     //자동완성용 문자추천 csv의 경우 csv가 누적되며 바뀌므로 이벤트 스케쥴러처럼 주기마다 갱신되게 하기?
     @Scheduled(cron = "0 0 0/1 * * *") //1시간에 한번 실행되게 하기
     public void logupdate(){
-        Set<String> words2 = new TreeSet<>();
+        List<String>words2 = new LinkedList<>();
         BufferedReader br = null;
         try {
             // 대상 CSV 파일의 경로 설정
-            br = Files.newBufferedReader(Paths.get("build/resources/main/static/csv/Word_recommend.csv"), Charset.forName("UTF-8")); //csv 위치
+            br = Files.newBufferedReader(Paths.get("build/resources/main/static/csv/Word_recommend.csv"), Charset.forName("UTF-8")); //csv 위치 : 서버켜진상태에서 계속 갱신되므로 build에서 가져오기
             // CSV파일에서 읽어들인 1행분의 데이터
             String line = "";
 
@@ -75,7 +75,6 @@ public class BoardController {
                 // 반환용 리스트에 1행의 데이터를 저장
                 String answer =line.replace("," , "");
                 words2.add(answer);
-
             }
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -91,7 +90,7 @@ public class BoardController {
             }
 
         }
-        List<String>words3 = new LinkedList<>(words2); //중복 제거후 리스트로 전달
+        List<String>words3 = new LinkedList<>(words2); //중복 제거후 리스트로 전달 -> 단순 순서대로 추천하기로 했기때문, 빈도수로 할거면 재설계
         this.rec = new AhoCorasick(words3);
     }
 
@@ -157,6 +156,26 @@ public class BoardController {
         System.out.println("시간차이 : "+secDiffTime);
 
 
+        return result;
+
+    }
+
+    @PostMapping("/recommend")
+    @ResponseBody
+    public List<String> recommend( String content){
+
+        Map<String ,Integer> result1 = rec.autocomplete(content);
+
+        List<Map.Entry<String, Integer>> sortedList = new ArrayList<>(result1.entrySet());
+        sortedList.sort(Map.Entry.comparingByValue(Comparator.reverseOrder()));
+
+        // 정렬된 리스트를 이용하여 ArrayList 생성
+        List<String> result = new ArrayList<>();
+        for (Map.Entry<String, Integer> entry : sortedList) {
+            System.out.println("키"+entry.getKey());
+            System.out.println("밸류"+entry.getValue());
+            result.add(entry.getKey());
+        }
         return result;
 
     }

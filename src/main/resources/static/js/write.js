@@ -43,3 +43,25 @@ function dowrite(){
          }
     })
 }
+
+function dorecommend(){
+    let contentall = document.querySelector("#content").value
+    let contentlist = contentall.split(" ")
+    let content = contentlist[contentlist.length-1]
+    console.log(content);
+    if(content.length >= 1){   
+     $.ajax({
+            url : '/recommend',
+            method : 'POST',
+            data :{content:content},
+            success : (result) => {
+            if(result.length != 0){
+                document.querySelector("#auto").innerHTML = result;
+                }
+            }
+        })
+    }
+    else{
+        document.querySelector("#auto").innerHTML = "추천단어";
+    }
+}

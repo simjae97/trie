@@ -1,10 +1,11 @@
 {{>hf/header}}
     <div class="container" id="loginview">
-        <h3> 로그인 페이지 </h3>
+        <h3> 글 등록 </h3>
         아이디 <input id="id" /> <br/>
         비밀번호 <input id="pw" /> <br/>
         제목 <input id="title" /> <br/>
-        내용 <textarea id="content" > </textarea> <br/>
+        내용 <textarea id="content" onkeyup="dorecommend()"> </textarea> <br/>
+        <div id="auto"> 추천하는 단어 </div>
         <button type="button" onclick="dowrite()">글 쓰기</button>
     </div>
     <script src="/js/write.js"></script>

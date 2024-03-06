@@ -2,6 +2,7 @@ package myproject1.trie.trie;
 
 
 
+
 import java.util.*;
 
 
@@ -23,7 +24,7 @@ public class AhoCorasick {
                 node = node.children.get(c); //현재 노드를 자식노드로 변경
             }
             node.output.add(pattern); //종료되는 패턴 저장
-            node.isEndOfWord = true;
+            node.isEndOfWord += 1;
         }
     }
 
@@ -67,8 +68,8 @@ public class AhoCorasick {
         }
         return results;
     }
-    public List<String> autocomplete(String prefix) { //원래 트라이구조 사용처인 검색어 기능을 추가해 자동완성 기능 추가
-        List<String> suggestions = new ArrayList<>(); //리턴할 문자열 리스트 생성
+    public Map<String , Integer> autocomplete(String prefix){ //원래 트라이구조 사용처인 검색어 기능을 추가해 자동완성 기능 추가
+        Map<String , Integer> suggestions = new TreeMap<>(); //리턴할 문자열 리스트 생성
         TrieNode node = root; //부모 루트부터 시작
         for (char c : prefix.toCharArray()) { //문자열 향상된 포문
             if (!node.children.containsKey(c)) {
@@ -81,12 +82,13 @@ public class AhoCorasick {
     }
 
 
-    private void getAllWords(TrieNode node, String prefix, List<String> suggestions) {
-        if (node.isEndOfWord) {
-            suggestions.add(prefix); //끝문자면 바로 대입
+    private void getAllWords(TrieNode node, String prefix, Map<String , Integer> suggestions) {
+        if (node.isEndOfWord != 0) {
+            suggestions.put(prefix, node.isEndOfWord); //끝문자면 바로 대입
         }
         for (char c : node.children.keySet()) { //직계 자손에 대한 반복문이므로 단순히 반복문을 돌려도 문제가 없음
             getAllWords(node.children.get(c), prefix + c, suggestions); //재귀형태로 구현
         }
     }
+
 }

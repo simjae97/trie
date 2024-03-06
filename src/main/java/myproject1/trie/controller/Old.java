@@ -100,12 +100,12 @@ public class Old { //이전에 해봤던거
 
 
 
-        String prefix = "안"; //어떻게 로그처리해서 추천을 넣을지, 추천의 우선순위(가나다순인지,빈도순으로 할지) 고민
-        AhoCorasick ret2 = new AhoCorasick(list2);
-        List<String> suggestions = ret2.autocomplete(prefix);
-        System.out.println("검색어 '" + prefix + "'를 위한 자동완성 제안:");
-        for (String suggestion : suggestions) {
-            System.out.println(suggestion);
-        }
+//        String prefix = "안"; //어떻게 로그처리해서 추천을 넣을지, 추천의 우선순위(가나다순인지,빈도순으로 할지) 고민
+//        AhoCorasick ret2 = new AhoCorasick(list2);
+//        List<String> suggestions = ret2.autocomplete(prefix);
+//        System.out.println("검색어 '" + prefix + "'를 위한 자동완성 제안:");
+//        for (String suggestion : suggestions) {
+//            System.out.println(suggestion);
+//        }
     }
 }
